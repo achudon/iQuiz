@@ -9,10 +9,17 @@
 import UIKit
 
 class QuizTableCell : UITableViewCell {
+    @IBOutlet weak var icon: UIImageView!
    
     @IBOutlet weak var title: UILabel!
     
     @IBOutlet weak var detail: UILabel!
     
-    @IBOutlet weak var icon: UIImageView!
+    
+    func loadItem(iconPath : String, passedTitle : String, passedDetail : String) {
+        title.text = passedTitle
+        self.detail.text = passedDetail
+        icon.image = UIImage(named : iconPath)
+    }
+
 }

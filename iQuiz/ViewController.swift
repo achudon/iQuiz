@@ -8,14 +8,42 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+    
+    // data for the meantime (while not from database)
+    var categories : [(String, String, String)] = [
+        ("done", "Mathematics", "All about math!"),
+        ("done", "Marvel Super Hereos", "How well do you know the universe?"),
+        ("done", "Science", "Lots of science.")
+    ]
+    
+    @IBAction func selectSettings(sender: UIBarButtonItem) {
+        let settingsController = UIAlertController(title: "Settings", message: "Settings go here", preferredStyle: .Alert)
+        
+        let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+        
+        settingsController.addAction(defaultAction)
+        
+        presentViewController(settingsController, animated: true, completion: nil)
+    }
+    
+    // define how many rows the table should have
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return categories.count
+    }
+    
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell: QuizTableCell = tableView.dequeueReusableCellWithIdentifier("customCell") as! QuizTableCell
+        
+        let (image, title, detail) = categories[indexPath.row]
+        
+        cell.loadItem(image, passedTitle: title, passedDetail: detail)
+        
+        return cell
+    }
+    
 
-    @IBOutlet weak var table: UITableView!
-    
-    var table_data = Array<QuizTableCell>()
-    
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -26,4 +54,5 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 }
+
 
