@@ -13,6 +13,7 @@
 		9D0500121CD4216B00E7DB28 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9D0500111CD4216B00E7DB28 /* Assets.xcassets */; };
 		9D0500151CD4216B00E7DB28 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9D0500131CD4216B00E7DB28 /* LaunchScreen.storyboard */; };
 		9D05001D1CD421FD00E7DB28 /* QuizTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D05001C1CD421FD00E7DB28 /* QuizTableCell.swift */; };
+		9D2601291CDED399006C6707 /* Quiz.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D2601281CDED399006C6707 /* Quiz.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		9D0500141CD4216B00E7DB28 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9D0500161CD4216B00E7DB28 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9D05001C1CD421FD00E7DB28 /* QuizTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuizTableCell.swift; sourceTree = "<group>"; };
+		9D2601281CDED399006C6707 /* Quiz.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Quiz.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,6 +57,7 @@
 				9D0500131CD4216B00E7DB28 /* LaunchScreen.storyboard */,
 				9D0500161CD4216B00E7DB28 /* Info.plist */,
 				9D05001C1CD421FD00E7DB28 /* QuizTableCell.swift */,
+				9D2601281CDED399006C6707 /* Quiz.swift */,
 			);
 			path = iQuiz;
 			sourceTree = "<group>";
@@ -140,6 +143,7 @@
 			files = (
 				9D05000D1CD4216B00E7DB28 /* ViewController.swift in Sources */,
 				9D05000B1CD4216B00E7DB28 /* AppDelegate.swift in Sources */,
+				9D2601291CDED399006C6707 /* Quiz.swift in Sources */,
 				9D05001D1CD421FD00E7DB28 /* QuizTableCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -292,6 +296,7 @@
 				9D05001B1CD4216B00E7DB28 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
