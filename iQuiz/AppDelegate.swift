@@ -8,14 +8,60 @@
 
 import UIKit
 
+public class ApplicationData {
+    
+    public var data : NSArray? = []
+    
+    public var currentTopic = -1
+    
+    private static var _instance = ApplicationData()
+    
+    public static var Instance : ApplicationData {
+        get {return _instance }
+    }
+    
+    func populate() {
+        
+    }
+    
+    
+}
+
+
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    
+    func getData() -> NSArray? {
+        var responseArray : NSArray?
+        let url = NSURL(string: "http://tednewardsandbox.site44.com/questions.json")
+        
+        let task = NSURLSession.sharedSession().dataTaskWithURL(url!) {(data, response, error) in
+            
+            if (data != nil) {
+                do {
+                    responseArray =  try NSJSONSerialization.JSONObjectWithData(data!, options: []) as! NSArray
+                } catch {
+                    responseArray = nil
+                }
+                print("From appdelegate")
+                print(responseArray)
+            } else {
+                print("No data")
+            }
+        }
+        task.resume()
+        return responseArray
+    }
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+        var appData = ApplicationData.Instance
+        appData.data = getData()
+        
+        //get JSON data
         return true
     }
 
