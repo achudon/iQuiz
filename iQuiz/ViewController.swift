@@ -10,6 +10,29 @@ import UIKit
 
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
+    var responseDict : NSDictionary?
+    
+    func getData() {
+        
+        let url = NSURL(string: "http://tednewardsandbox.site44.com/questions.json")
+        
+        let task = NSURLSession.sharedSession().dataTaskWithURL(url!) {(data, response, error) in
+            
+            if (data != nil) {
+                print(NSString(data: data!, encoding: NSUTF8StringEncoding))
+            } else {
+                print("No data")
+                
+                do {
+                    self.responseDict =  try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! NSDictionary
+                } catch {
+                    self.responseDict = nil
+                }  
+            }
+        }
+        task.resume()
+    }
+    
     // data for the meantime (while not from database)
     var categories : [(String, String, String)] = [
         ("done", "Mathematics", "All about math!"),
@@ -42,10 +65,10 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
         return cell
     }
-    
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        getData()
         // Do any additional setup after loading the view, typically from a nib.
     }
 
