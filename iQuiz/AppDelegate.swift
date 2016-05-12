@@ -14,6 +14,14 @@ public class ApplicationData {
     
     public var currentTopic = -1
     
+    public var topicList : [String] = []
+    
+    public var topicDescriptions : [String] = []
+    
+    public var categories : [(String, String, String)] = []
+    
+    public var quizzes : [Quiz] = []
+    
     private static var _instance = ApplicationData()
     
     public static var Instance : ApplicationData {
@@ -21,7 +29,23 @@ public class ApplicationData {
     }
     
     func populate() {
+        for quiz in data! {
+            let currTitle = quiz["title"]
+            let currDesc = quiz["desc"]
+            topicList.append(currTitle!!.description)
+            topicDescriptions.append(currDesc!!.description)
+            
+            setCategories()
+        }
+    }
+    
+    func setCategories() {
+        let titles = topicList
+        let descriptions = topicDescriptions
         
+        for i in 0 ..< titles.count {
+            categories.append(("done", titles[i], descriptions[i]))
+        }
     }
     
     
@@ -34,34 +58,48 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     
-    func getData() -> NSArray? {
-        var responseArray : NSArray?
+    func getData(completion: ((data: NSArray?) -> Void)) {
         let url = NSURL(string: "http://tednewardsandbox.site44.com/questions.json")
         
         let task = NSURLSession.sharedSession().dataTaskWithURL(url!) {(data, response, error) in
-            
-            if (data != nil) {
-                do {
-                    responseArray =  try NSJSONSerialization.JSONObjectWithData(data!, options: []) as! NSArray
-                } catch {
-                    responseArray = nil
-                }
-                print("From appdelegate")
-                print(responseArray)
-            } else {
-                print("No data")
+            var responseArray : NSArray? = []
+            do {
+                responseArray =  try NSJSONSerialization.JSONObjectWithData(data!, options: []) as? NSArray
+            } catch {
+                responseArray = nil
             }
+            completion(data: responseArray)
+            
         }
         task.resume()
-        return responseArray
     }
+    
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
-        var appData = ApplicationData.Instance
-        appData.data = getData()
         
-        //get JSON data
+        let appDataInstance = ApplicationData.Instance
+        
+        let completionFunction : (NSArray?) -> () =
+            {data in
+            dispatch_async(dispatch_get_main_queue()) {
+                appDataInstance.data = data
+                appDataInstance.populate()
+            }
+        }
+        
+        func getCategories() {
+            let appDataInstance = ApplicationData.Instance
+            let descriptions = appDataInstance.topicDescriptions
+            print("descriptions")
+            print(descriptions)
+            
+        }
+        
+        
+        // get JSON data
+        getData(completionFunction)
+
         return true
     }
 

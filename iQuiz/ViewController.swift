@@ -12,32 +12,11 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     var responseArray : NSArray?
     
-    func getData() {
-        let url = NSURL(string: "http://tednewardsandbox.site44.com/questions.json")
-        
-        let task = NSURLSession.sharedSession().dataTaskWithURL(url!) {(data, response, error) in
-            
-            if (data != nil) {
-                do {
-                    self.responseArray =  try NSJSONSerialization.JSONObjectWithData(data!, options: []) as! NSArray
-                } catch {
-                    self.responseArray = nil
-                }
-                print(self.responseArray)
-            } else {
-                print("No data")
-            }
-        }
-        task.resume()
-    }
-    
-    
     // data for the meantime (while not from database)
-    var categories : [(String, String, String)] = [
-        ("done", "Mathematics", "All about math!"),
-        ("done", "Marvel Super Hereos", "How well do you know the universe?"),
-        ("done", "Science", "Lots of science.")
-    ]
+    
+    var appDataInstance = ApplicationData.Instance
+    
+    var categories : [(String, String, String)] = []
     
     @IBAction func selectSettings(sender: UIBarButtonItem) {
         let settingsController = UIAlertController(title: "Settings", message: "Settings go here", preferredStyle: .Alert)
@@ -51,6 +30,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     // define how many rows the table should have
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        categories = appDataInstance.categories
         return categories.count
     }
     
@@ -58,13 +38,22 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell: QuizTableCell = tableView.dequeueReusableCellWithIdentifier("customCell") as! QuizTableCell
         
+        categories = appDataInstance.categories
+        
+        print(categories)
+        
         let (image, title, detail) = categories[indexPath.row]
         
         cell.loadItem(image, passedTitle: title, passedDetail: detail)
         
         return cell
     }
-
+    
+    func viewWillAppear() {
+        categories = appDataInstance.categories
+        print(categories)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
