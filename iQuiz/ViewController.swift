@@ -12,11 +12,11 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     var responseArray : NSArray?
     
+    @IBOutlet weak var tableView: UITableView!
+    
     // data for the meantime (while not from database)
     
     var appDataInstance = ApplicationData.Instance
-    
-    var categories : [(String, String, String)] = []
     
     @IBAction func selectSettings(sender: UIBarButtonItem) {
         let settingsController = UIAlertController(title: "Settings", message: "Settings go here", preferredStyle: .Alert)
@@ -28,35 +28,31 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         presentViewController(settingsController, animated: true, completion: nil)
     }
     
-    // define how many rows the table should have
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        categories = appDataInstance.categories
-        return categories.count
+        return ApplicationData.Instance.categories.count
     }
-    
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell: QuizTableCell = tableView.dequeueReusableCellWithIdentifier("customCell") as! QuizTableCell
         
-        categories = appDataInstance.categories
-        
-        print(categories)
-        
-        let (image, title, detail) = categories[indexPath.row]
+        let (image, title, detail) = ApplicationData.Instance.categories[indexPath.row]
         
         cell.loadItem(image, passedTitle: title, passedDetail: detail)
         
         return cell
     }
     
-    func viewWillAppear() {
-        categories = appDataInstance.categories
-        print(categories)
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            ApplicationData.Instance.getData()
+            
+            dispatch_async(dispatch_get_main_queue()) {
+                self.tableView.reloadData()
+            }
+        }
     }
 
     override func didReceiveMemoryWarning() {

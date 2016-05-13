@@ -91,7 +91,7 @@
                                     </tableViewCell>
                                 </prototypes>
                                 <connections>
-                                    <outlet property="dataSource" destination="hRO-lr-8MK" id="EnR-9b-4q9"/>
+                                    <outlet property="dataSource" destination="hRO-lr-8MK" id="b8f-pT-0ts"/>
                                     <outlet property="delegate" destination="hRO-lr-8MK" id="MSn-sr-gUU"/>
                                 </connections>
                             </tableView>
@@ -107,6 +107,9 @@
                             <constraint firstItem="Nci-GC-7AT" firstAttribute="top" secondItem="VjW-cb-Qpr" secondAttribute="bottom" constant="8" id="pN6-kj-L6J"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="tableView" destination="EJS-mW-qvU" id="7f1-Mm-mdL"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zed-ky-yk7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

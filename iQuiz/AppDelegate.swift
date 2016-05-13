@@ -28,15 +28,27 @@ public class ApplicationData {
         get {return _instance }
     }
     
-    func populate() {
-        for quiz in data! {
-            let currTitle = quiz["title"]
-            let currDesc = quiz["desc"]
-            topicList.append(currTitle!!.description)
-            topicDescriptions.append(currDesc!!.description)
-            
-            setCategories()
+    func getData() {
+        let url = NSURL(string: "http://tednewardsandbox.site44.com/questions.json")
+        
+        let task = NSURLSession.sharedSession().dataTaskWithURL(url!) {(data, response, error) in
+            var responseArray : NSArray? = []
+            do {
+                responseArray =  try NSJSONSerialization.JSONObjectWithData(data!, options: []) as? NSArray
+                
+                for quiz in responseArray! {
+                    let currTitle = quiz["title"]
+                    let currDesc = quiz["desc"]
+                    self.topicList.append(currTitle!!.description)
+                    self.topicDescriptions.append(currDesc!!.description)
+                    
+                    self.setCategories()
+                }
+            } catch {
+                responseArray = nil
+            }
         }
+        task.resume()
     }
     
     func setCategories() {
@@ -52,54 +64,14 @@ public class ApplicationData {
 }
 
 
-
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    
-    func getData(completion: ((data: NSArray?) -> Void)) {
-        let url = NSURL(string: "http://tednewardsandbox.site44.com/questions.json")
-        
-        let task = NSURLSession.sharedSession().dataTaskWithURL(url!) {(data, response, error) in
-            var responseArray : NSArray? = []
-            do {
-                responseArray =  try NSJSONSerialization.JSONObjectWithData(data!, options: []) as? NSArray
-            } catch {
-                responseArray = nil
-            }
-            completion(data: responseArray)
-            
-        }
-        task.resume()
-    }
-    
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         
-        let appDataInstance = ApplicationData.Instance
-        
-        let completionFunction : (NSArray?) -> () =
-            {data in
-            dispatch_async(dispatch_get_main_queue()) {
-                appDataInstance.data = data
-                appDataInstance.populate()
-            }
-        }
-        
-        func getCategories() {
-            let appDataInstance = ApplicationData.Instance
-            let descriptions = appDataInstance.topicDescriptions
-            print("descriptions")
-            print(descriptions)
-            
-        }
-        
-        
-        // get JSON data
-        getData(completionFunction)
-
         return true
     }
 
