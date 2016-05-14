@@ -8,13 +8,13 @@
 
 import UIKit
 
+import Foundation
+
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     var responseArray : NSArray?
     
     @IBOutlet weak var tableView: UITableView!
-    
-    // data for the meantime (while not from database)
     
     var appDataInstance = ApplicationData.Instance
     
@@ -32,12 +32,16 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         return ApplicationData.Instance.categories.count
     }
     
+//    @objc func tableView(tableView : UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+//        
+//    }
+    
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell: QuizTableCell = tableView.dequeueReusableCellWithIdentifier("customCell") as! QuizTableCell
         
-        let (image, title, detail) = ApplicationData.Instance.categories[indexPath.row]
+        let (image, title, detail, topicNumber) = ApplicationData.Instance.categories[indexPath.row]
         
-        cell.loadItem(image, passedTitle: title, passedDetail: detail)
+        cell.loadItem(image, passedTitle: title, passedDetail: detail, topicNumber : topicNumber)
         
         return cell
     }
@@ -45,8 +49,38 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        
+        let documents = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
+        let filePath = documents.stringByAppendingString("iQuizData.json")
+        
+        let jsonData = NSData(contentsOfFile: filePath)
+        
+        NSLog((jsonData?.description)!)
+        
+        if jsonData == nil {
+            goFetchData()
+        } else {
+            var jsonArray : NSArray?
+            do {
+                jsonArray = try NSJSONSerialization.JSONObjectWithData(jsonData!, options: []) as? NSArray
+            } catch {
+                goFetchData()
+            }
+            
+            if jsonArray == nil {
+                goFetchData()
+            } else {
+                appDataInstance.populate(jsonArray)
+            }
+            
+        }
 
+        
+    }
+    
+    func goFetchData() {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            
             ApplicationData.Instance.getData()
             
             dispatch_async(dispatch_get_main_queue()) {

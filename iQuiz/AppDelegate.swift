@@ -8,6 +8,8 @@
 
 import UIKit
 
+import Foundation
+
 public class ApplicationData {
     
     public var data : NSArray? = []
@@ -18,7 +20,7 @@ public class ApplicationData {
     
     public var topicDescriptions : [String] = []
     
-    public var categories : [(String, String, String)] = []
+    public var categories : [(String, String, String, Int)] = []
     
     public var quizzes : [Quiz] = []
     
@@ -30,25 +32,47 @@ public class ApplicationData {
     
     func getData() {
         let url = NSURL(string: "http://tednewardsandbox.site44.com/questions.json")
+        var responseArray : NSArray? = []
         
         let task = NSURLSession.sharedSession().dataTaskWithURL(url!) {(data, response, error) in
-            var responseArray : NSArray? = []
+            
             do {
                 responseArray =  try NSJSONSerialization.JSONObjectWithData(data!, options: []) as? NSArray
-                
-                for quiz in responseArray! {
-                    let currTitle = quiz["title"]
-                    let currDesc = quiz["desc"]
-                    self.topicList.append(currTitle!!.description)
-                    self.topicDescriptions.append(currDesc!!.description)
-                    
-                    self.setCategories()
-                }
             } catch {
                 responseArray = nil
             }
+            
+            // save to documents
+            let documents = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
+            let filePath = documents.stringByAppendingString("iQuizData.json")
+            
+            if responseArray != nil {
+                responseArray!.writeToFile(filePath, atomically: true)
+            }
+            self.populate(responseArray)
         }
+        
         task.resume()
+    }
+    
+    func populate(data : NSArray?) {
+        
+        let responseArray = data
+        
+        for quiz in responseArray! {
+            let currTitle = quiz["title"]
+            let currDesc = quiz["desc"]
+            self.topicList.append(currTitle!!.description)
+            self.topicDescriptions.append(currDesc!!.description)
+            
+            //                    var questions = quiz["questions"]
+            //
+            //                    for var i = 0; i < questions!!.count; i += 1 {
+            //                        var question : [String] = questions!![i]
+            //                        var myQuestion : Question = Question(text: question["text"], answer: question["answer"], answers: question["answers"])
+            //                    }
+        }
+        self.setCategories()
     }
     
     func setCategories() {
@@ -56,7 +80,7 @@ public class ApplicationData {
         let descriptions = topicDescriptions
         
         for i in 0 ..< titles.count {
-            categories.append(("done", titles[i], descriptions[i]))
+            categories.append(("done", titles[i], descriptions[i], i))
         }
     }
     

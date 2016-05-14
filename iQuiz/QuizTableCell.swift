@@ -15,11 +15,13 @@ class QuizTableCell : UITableViewCell {
     
     @IBOutlet weak var detail: UILabel!
     
+    private var topicNumber = -1
     
-    func loadItem(iconPath : String, passedTitle : String, passedDetail : String) {
+    func loadItem(iconPath : String, passedTitle : String, passedDetail : String, topicNumber : Int) {
         title.text = passedTitle
         self.detail.text = passedDetail
         icon.image = UIImage(named : iconPath)
+        self.topicNumber = topicNumber
     }
 
 }

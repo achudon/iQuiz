@@ -29,13 +29,12 @@ public class Quiz {
 public class Question {
     public var text : String
     public var answer : Int
-    public var userAnswer : Int
+    public var userAnswer : Int = -1
     public var answers : [String]
     
-    init(text : String, answer : Int, answers : [String], userAnswer : Int){
+    init(text : String, answer : Int, answers : [String]){
         self.text = text
         self.answer = answer
         self.answers = answers
-        self.userAnswer = userAnswer
     }
 }
